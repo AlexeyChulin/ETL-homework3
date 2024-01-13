@@ -23,8 +23,9 @@ if(1==1){
         .load("/home/alexey/ETL/seminar3/GeekbrainsETL/s3.xlsx")
 	df1.show()
     val mysql_conn = "jdbc:mysql://localhost:3306/spark?user=alexey&password=astron93"
+    val driver = "com.mysql.cj.jdbc.Driver"
 	df1.write.format("jdbc").option("url", mysql_conn)
-        .option("driver", "com.mysql.cj.jdbc.Driver").option("dbtable", "tasketl3a")
+        .option("driver", driver).option("dbtable", "tasketl3a")
         .mode("overwrite").save()
     val my_query = s"""
 WITH tb AS (SELECT 
@@ -77,9 +78,10 @@ GROUP BY 1"""
     .option("query", my_query) 
     .load()
     df.show(truncate=false)
+    df.write.format("jdbc").option("url", mysql_conn)
+        .option("driver", driver).option("dbtable", "result")
+        .mode("overwrite").save()
 
-    /*val newDF = spark.sql(my_query)
-    newDF.show()*/
 	println("Homework 3")
 }
 val s0 = (System.currentTimeMillis() - t1)/1000
